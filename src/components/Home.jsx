@@ -1,7 +1,7 @@
 import { getWorkouts, getStreak, getLevel, getGreeting, getDailyTip, getWeekPlan } from '../utils/storage';
 import { getTodaySuggestion, getRoutineById } from '../data/routines';
 
-export default function Home({ navigate, startWorkout, mode, onToggleMode }) {
+export default function Home({ navigate, startWorkout, mode, onToggleMode, onExport }) {
   const workouts = getWorkouts();
   const streak = getStreak();
   const level = getLevel(workouts.length);
@@ -158,6 +158,11 @@ export default function Home({ navigate, startWorkout, mode, onToggleMode }) {
           </div>
         </div>
       )}
+
+      {/* Export button */}
+      <button className="btn export-btn" onClick={onExport}>
+        ☁️ Exportar datos a GitHub
+      </button>
 
       {/* Tip of the day */}
       <div className="section-title">💡 Consejo del día</div>

@@ -8,6 +8,7 @@ import ExerciseDetail from './components/ExerciseDetail';
 import History from './components/History';
 import Stats from './components/Stats';
 import WeekPlanner from './components/WeekPlanner';
+import ExportModal from './components/ExportModal';
 
 function getStoredMode() {
   try {
@@ -23,6 +24,7 @@ export default function App() {
   const [selectedExerciseId, setSelectedExerciseId] = useState(null);
   const [historyTab, setHistoryTab] = useState('history'); // 'history' | 'stats'
   const [mode, setMode] = useState(getStoredMode); // 'gym' | 'home'
+  const [showExport, setShowExport] = useState(false);
 
   const toggleMode = useCallback((newMode) => {
     setMode(newMode);
@@ -55,7 +57,7 @@ export default function App() {
   const renderView = () => {
     switch (view) {
       case 'home':
-        return <Home navigate={navigate} startWorkout={startWorkout} mode={mode} onToggleMode={toggleMode} />;
+        return <Home navigate={navigate} startWorkout={startWorkout} mode={mode} onToggleMode={toggleMode} onExport={() => setShowExport(true)} />;
       case 'routines':
         return <Routines startWorkout={startWorkout} mode={mode} onToggleMode={toggleMode} />;
       case 'workout':
@@ -123,6 +125,8 @@ export default function App() {
       )}
 
       <div className="app-content">{renderView()}</div>
+
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
 
       {showNav && (
         <Navigation
