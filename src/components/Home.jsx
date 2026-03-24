@@ -159,9 +159,9 @@ export default function Home({ navigate, startWorkout, mode, onToggleMode, onExp
         </div>
       )}
 
-      {/* Export button */}
+      {/* Save/Load button */}
       <button className="btn export-btn" onClick={onExport}>
-        ☁️ Exportar datos a GitHub
+        💾 Guardar / Cargar datos
       </button>
 
       {/* Tip of the day */}

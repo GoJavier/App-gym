@@ -1,138 +1,124 @@
 import { useState, useEffect } from 'react';
-import { exportToGitHub, getGitHubSettings, saveGitHubSettings, clearGitHubSettings } from '../utils/github';
+import { getSavedUsers, saveUserData, loadUserData, deleteUserSave, getLastUsername, setLastUsername } from '../utils/github';
 
 export default function ExportModal({ onClose }) {
-  const [owner, setOwner] = useState('');
-  const [repo, setRepo] = useState('');
-  const [token, setToken] = useState('');
-  const [remember, setRemember] = useState(true);
+  const [username, setUsername] = useState('');
+  const [savedUsers, setSavedUsers] = useState([]);
   const [status, setStatus] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [statusType, setStatusType] = useState(''); // 'success' | 'error' | ''
 
   useEffect(() => {
-    const saved = getGitHubSettings();
-    if (saved) {
-      setOwner(saved.owner || '');
-      setRepo(saved.repo || '');
-      setToken(saved.token || '');
-    }
+    setUsername(getLastUsername());
+    setSavedUsers(getSavedUsers());
   }, []);
 
-  const handleExport = async () => {
-    if (!owner.trim() || !repo.trim() || !token.trim()) {
-      setStatus('⚠️ Completá todos los campos');
+  const handleSave = () => {
+    const name = username.trim();
+    if (!name) {
+      setStatus('⚠️ Escribí un nombre');
+      setStatusType('error');
       return;
     }
 
-    setLoading(true);
-    setDone(false);
-    setStatus('');
+    const result = saveUserData(name);
+    setLastUsername(name);
+    setSavedUsers(getSavedUsers());
 
-    try {
-      if (remember) {
-        saveGitHubSettings({ owner: owner.trim(), repo: repo.trim(), token: token.trim() });
-      }
+    const newCount = result.totalWorkouts - result.previousWorkouts;
+    if (result.previousWorkouts > 0 && newCount > 0) {
+      setStatus(`✅ ¡Listo! +${newCount} entrenamientos nuevos (total: ${result.totalWorkouts})`);
+    } else if (result.previousWorkouts > 0) {
+      setStatus(`✅ Guardado actualizado · ${result.totalWorkouts} entrenamientos`);
+    } else {
+      setStatus(`✅ ¡Primer guardado! ${result.totalWorkouts} entrenamientos`);
+    }
+    setStatusType('success');
+  };
 
-      await exportToGitHub(owner.trim(), repo.trim(), token.trim(), setStatus);
-      setDone(true);
-    } catch (err) {
-      setStatus(`❌ Error: ${err.message}`);
-    } finally {
-      setLoading(false);
+  const handleLoad = (name) => {
+    if (!window.confirm(`¿Cargar los datos de "${name}"? Esto reemplaza tus datos actuales.`)) return;
+    const result = loadUserData(name);
+    if (result) {
+      setLastUsername(name);
+      setUsername(name);
+      setStatus(`✅ Datos de "${name}" cargados (${result.workoutCount} entrenamientos). Recargando...`);
+      setStatusType('success');
+      setTimeout(() => window.location.reload(), 1200);
+    } else {
+      setStatus('❌ No se pudo cargar');
+      setStatusType('error');
     }
   };
 
-  const handleClear = () => {
-    clearGitHubSettings();
-    setOwner('');
-    setRepo('');
-    setToken('');
-    setStatus('Datos de conexión borrados');
+  const handleDelete = (name) => {
+    if (!window.confirm(`¿Borrar el guardado de "${name}"?`)) return;
+    deleteUserSave(name);
+    setSavedUsers(getSavedUsers());
+    setStatus(`🗑️ Guardado de "${name}" eliminado`);
+    setStatusType('');
   };
 
   return (
     <div className="export-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="export-modal fade-in">
         <div className="export-header">
-          <div className="export-title">☁️ Exportar a GitHub</div>
+          <div className="export-title">💾 Guardar / Cargar Datos</div>
           <button className="export-close" onClick={onClose}>✕</button>
         </div>
 
         <div className="export-body">
           <p className="export-desc">
-            Guardá todos tus entrenamientos en un archivo JSON en tu repo de GitHub.
-            Si ya tenés un backup anterior, solo se agregan los datos nuevos.
+            Escribí tu nombre para guardar todos tus entrenamientos.
+            Si ya tenés un guardado, solo se agregan los nuevos datos.
           </p>
 
-          <label className="export-label">👤 Usuario de GitHub</label>
+          <label className="export-label">👤 Tu nombre</label>
           <input
             className="export-input"
             type="text"
-            placeholder="tu-usuario"
-            value={owner}
-            onChange={e => setOwner(e.target.value)}
-            disabled={loading}
-            autoComplete="username"
+            placeholder="Ej: Javier"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
+            autoFocus
           />
 
-          <label className="export-label">📁 Nombre del repositorio</label>
-          <input
-            className="export-input"
-            type="text"
-            placeholder="mi-gym-data"
-            value={repo}
-            onChange={e => setRepo(e.target.value)}
-            disabled={loading}
-          />
-
-          <label className="export-label">🔑 Token de acceso personal (PAT)</label>
-          <input
-            className="export-input"
-            type="password"
-            placeholder="ghp_xxxxxxxxxxxx"
-            value={token}
-            onChange={e => setToken(e.target.value)}
-            disabled={loading}
-            autoComplete="off"
-          />
-          <div className="export-token-help">
-            Creá uno en GitHub → Settings → Developer settings → Personal access tokens →
-            Fine-grained tokens. Permiso necesario: <strong>Contents (Read and write)</strong> sobre el repo.
-          </div>
-
-          <label className="export-checkbox-row">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={e => setRemember(e.target.checked)}
-              disabled={loading}
-            />
-            <span>Recordar datos para la próxima vez</span>
-          </label>
+          <button
+            className="btn btn-primary export-save-btn"
+            onClick={handleSave}
+            disabled={!username.trim()}
+          >
+            💾 Guardar mis datos
+          </button>
 
           {status && (
-            <div className={`export-status ${done ? 'success' : ''}`}>
-              {loading && <span className="export-spinner" />}
+            <div className={`export-status ${statusType}`}>
               {status}
             </div>
           )}
-        </div>
 
-        <div className="export-footer">
-          {getGitHubSettings() && (
-            <button className="btn btn-secondary export-clear-btn" onClick={handleClear} disabled={loading}>
-              🗑️ Borrar datos
-            </button>
+          {savedUsers.length > 0 && (
+            <>
+              <div className="export-divider" />
+              <div className="export-label">📂 Guardados existentes</div>
+              <div className="export-saves">
+                {savedUsers.map(u => (
+                  <div key={u.username} className="export-save-row">
+                    <div className="export-save-info" onClick={() => handleLoad(u.username)}>
+                      <div className="export-save-name">👤 {u.username}</div>
+                      <div className="export-save-meta">
+                        {u.workoutCount} entrenamientos
+                        {u.savedAt && ` · ${new Date(u.savedAt).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}`}
+                      </div>
+                    </div>
+                    <button className="export-save-delete" onClick={() => handleDelete(u.username)}>
+                      🗑️
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
-          <button
-            className="btn btn-primary"
-            onClick={handleExport}
-            disabled={loading}
-            style={{ flex: 1 }}
-          >
-            {loading ? '⏳ Exportando...' : done ? '✅ ¡Exportado!' : '🚀 Exportar'}
-          </button>
         </div>
       </div>
     </div>
