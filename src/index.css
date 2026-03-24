@@ -165,12 +165,13 @@ a { color: var(--accent); text-decoration: none; }
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 8px 12px;
+  padding: 6px 4px;
   border-radius: var(--radius-md);
   transition: all 0.2s;
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
-  min-width: 64px;
+  min-width: 52px;
+  flex: 1;
 }
 
 .nav-item.active {
@@ -1257,6 +1258,232 @@ a { color: var(--accent); text-decoration: none; }
 
 .slide-up {
   animation: slideUp 0.3s ease;
+}
+
+/* --- Week Planner --- */
+.planner-focus-badge {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 16px;
+  padding: 6px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 20px;
+  display: inline-block;
+  width: 100%;
+}
+
+.planner-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.planner-day-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.planner-day-card:active:not(.rest) {
+  transform: scale(0.95);
+}
+
+.planner-day-card.today {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+}
+
+.planner-day-card.rest {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.planner-day-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.planner-day-emoji {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin: 2px 0;
+}
+
+.planner-day-name {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.planner-day-mode {
+  font-size: 0.7rem;
+}
+
+.planner-day-time {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+}
+
+.planner-today-badge {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+
+.planner-play {
+  font-size: 1.1rem;
+  margin-top: auto;
+}
+
+.planner-today-card {
+  border-left: 4px solid var(--accent);
+  cursor: pointer;
+}
+
+.planner-today-card:active {
+  transform: scale(0.98);
+}
+
+/* Planner Config Steps */
+.planner-config-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.planner-config-day {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 12px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  user-select: none;
+}
+
+.planner-config-day:active {
+  transform: scale(0.93);
+}
+
+.planner-config-day.gym {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.planner-config-day.home {
+  border-color: var(--success);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.planner-config-day-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.planner-config-day-icon {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.planner-config-day-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.planner-summary {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 8px;
+}
+
+/* Focus Selection */
+.planner-focus-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.planner-focus-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.planner-focus-card:active {
+  transform: scale(0.98);
+}
+
+.planner-focus-card.active {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.planner-focus-label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.planner-focus-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:active {
+  transform: scale(0.97);
+  opacity: 0.8;
+}
+
+.mt-16 {
+  margin-top: 16px;
 }
 
 /* --- Scrollbar --- */

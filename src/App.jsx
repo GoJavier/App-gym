@@ -7,6 +7,7 @@ import ExerciseLibrary from './components/ExerciseLibrary';
 import ExerciseDetail from './components/ExerciseDetail';
 import History from './components/History';
 import Stats from './components/Stats';
+import WeekPlanner from './components/WeekPlanner';
 
 function getStoredMode() {
   try {
@@ -65,6 +66,8 @@ export default function App() {
             navigate={navigate}
           />
         );
+      case 'planner':
+        return <WeekPlanner startWorkout={startWorkout} />;
       case 'library':
         return <ExerciseLibrary onSelectExercise={selectExercise} />;
       case 'exercise-detail':

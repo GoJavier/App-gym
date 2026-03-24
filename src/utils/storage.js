@@ -2,6 +2,7 @@ const STORAGE_KEYS = {
   WORKOUTS: 'gymbuddy_workouts',
   PROFILE: 'gymbuddy_profile',
   STREAK: 'gymbuddy_streak',
+  WEEK_PLAN: 'gymbuddy_weekplan',
 };
 
 export function getWorkouts() {
@@ -170,4 +171,17 @@ export function getDailyTip() {
     (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
   );
   return tips[dayOfYear % tips.length];
+}
+
+// --- Custom Week Plan ---
+export function getWeekPlan() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.WEEK_PLAN)) || null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveWeekPlan(plan) {
+  localStorage.setItem(STORAGE_KEYS.WEEK_PLAN, JSON.stringify(plan));
 }

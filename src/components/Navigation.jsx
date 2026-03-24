@@ -1,6 +1,7 @@
 export default function Navigation({ currentView, navigate }) {
   const items = [
     { id: 'home', icon: '🏠', label: 'Inicio' },
+    { id: 'planner', icon: '📅', label: 'Semana' },
     { id: 'routines', icon: '📋', label: 'Entrenar' },
     { id: 'library', icon: '📖', label: 'Ejercicios' },
     { id: 'history', icon: '📊', label: 'Progreso' },

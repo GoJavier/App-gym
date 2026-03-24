@@ -1,5 +1,5 @@
-import { getWorkouts, getStreak, getLevel, getGreeting, getDailyTip } from '../utils/storage';
-import { getTodaySuggestion } from '../data/routines';
+import { getWorkouts, getStreak, getLevel, getGreeting, getDailyTip, getWeekPlan } from '../utils/storage';
+import { getTodaySuggestion, getRoutineById } from '../data/routines';
 
 export default function Home({ navigate, startWorkout, mode, onToggleMode }) {
   const workouts = getWorkouts();
@@ -7,8 +7,23 @@ export default function Home({ navigate, startWorkout, mode, onToggleMode }) {
   const level = getLevel(workouts.length);
   const greeting = getGreeting();
   const tip = getDailyTip();
-  const todayRoutine = getTodaySuggestion(mode);
   const lastWorkout = workouts[0];
+
+  // Use custom week plan if available, otherwise fallback to mode-based suggestion
+  const savedPlan = getWeekPlan();
+  let todayRoutine = null;
+  let todayMode = null;
+  if (savedPlan?.plan) {
+    const jsDay = new Date().getDay();
+    const todayIdx = jsDay === 0 ? 6 : jsDay - 1;
+    const todayEntry = savedPlan.plan[todayIdx];
+    if (todayEntry?.routineId) {
+      todayRoutine = getRoutineById(todayEntry.routineId);
+      todayMode = todayEntry.mode;
+    }
+  } else {
+    todayRoutine = getTodaySuggestion(mode);
+  }
 
   return (
     <div className="fade-in">
@@ -94,6 +109,11 @@ export default function Home({ navigate, startWorkout, mode, onToggleMode }) {
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: 4 }}>
                   {todayRoutine.description}
                 </div>
+                {todayMode && (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--accent)', marginTop: 4 }}>
+                    {todayMode === 'home' ? '🏠 En casa' : '🏋️ Gimnasio'}
+                  </div>
+                )}
               </div>
               <div style={{ fontSize: '1.5rem' }}>▶️</div>
             </div>
