@@ -1,13 +1,13 @@
 import { getWorkouts, getStreak, getLevel, getGreeting, getDailyTip } from '../utils/storage';
 import { getTodaySuggestion } from '../data/routines';
 
-export default function Home({ navigate, startWorkout }) {
+export default function Home({ navigate, startWorkout, mode, onToggleMode }) {
   const workouts = getWorkouts();
   const streak = getStreak();
   const level = getLevel(workouts.length);
   const greeting = getGreeting();
   const tip = getDailyTip();
-  const todayRoutine = getTodaySuggestion();
+  const todayRoutine = getTodaySuggestion(mode);
   const lastWorkout = workouts[0];
 
   return (
@@ -20,6 +20,27 @@ export default function Home({ navigate, startWorkout }) {
           month: 'long',
         })}
       </div>
+
+      {/* Mode Toggle */}
+      <div className="mode-toggle">
+        <button
+          className={`mode-btn ${mode === 'gym' ? 'active' : ''}`}
+          onClick={() => onToggleMode('gym')}
+        >
+          🏋️ Gimnasio
+        </button>
+        <button
+          className={`mode-btn ${mode === 'home' ? 'active' : ''}`}
+          onClick={() => onToggleMode('home')}
+        >
+          🏠 En Casa
+        </button>
+      </div>
+      {mode === 'home' && (
+        <div className="mode-info">
+          Mancuernas, cosas de tu casa y tu propio cuerpo 💪
+        </div>
+      )}
 
       {/* Level Card */}
       <div className="card card-accent">

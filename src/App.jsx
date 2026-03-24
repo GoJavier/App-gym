@@ -8,11 +8,25 @@ import ExerciseDetail from './components/ExerciseDetail';
 import History from './components/History';
 import Stats from './components/Stats';
 
+function getStoredMode() {
+  try {
+    return localStorage.getItem('gymbuddy_mode') || 'gym';
+  } catch {
+    return 'gym';
+  }
+}
+
 export default function App() {
   const [view, setView] = useState('home');
   const [activeRoutineId, setActiveRoutineId] = useState(null);
   const [selectedExerciseId, setSelectedExerciseId] = useState(null);
   const [historyTab, setHistoryTab] = useState('history'); // 'history' | 'stats'
+  const [mode, setMode] = useState(getStoredMode); // 'gym' | 'home'
+
+  const toggleMode = useCallback((newMode) => {
+    setMode(newMode);
+    localStorage.setItem('gymbuddy_mode', newMode);
+  }, []);
 
   const navigate = useCallback((newView) => {
     setView(newView);
@@ -40,9 +54,9 @@ export default function App() {
   const renderView = () => {
     switch (view) {
       case 'home':
-        return <Home navigate={navigate} startWorkout={startWorkout} />;
+        return <Home navigate={navigate} startWorkout={startWorkout} mode={mode} onToggleMode={toggleMode} />;
       case 'routines':
-        return <Routines startWorkout={startWorkout} />;
+        return <Routines startWorkout={startWorkout} mode={mode} onToggleMode={toggleMode} />;
       case 'workout':
         return (
           <WorkoutSession

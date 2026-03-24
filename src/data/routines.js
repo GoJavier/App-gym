@@ -121,6 +121,118 @@ export const routines = [
   },
 ];
 
+// === RUTINAS PARA CASA (2 mancuernas de 10kg) ===
+export const homeRoutines = [
+  {
+    id: 'home-fullbody-a',
+    name: 'Full Body Casa A',
+    emoji: '🏠',
+    description: 'Entrenamiento completo en casa. Mancuernas, peso corporal y cosas del hogar.',
+    difficulty: 'Principiante',
+    estimatedTime: '35-45 min',
+    isHome: true,
+    exercises: [
+      { exerciseId: 'sentadilla-goblet', sets: 4, reps: '15' },
+      { exerciseId: 'floor-press', sets: 4, reps: '12' },
+      { exerciseId: 'remo-inclinado-mancuernas', sets: 4, reps: '12' },
+      { exerciseId: 'flexiones-pike', sets: 3, reps: '10' },
+      { exerciseId: 'curl-mancuernas', sets: 3, reps: '12' },
+      { exerciseId: 'flexiones-diamante', sets: 3, reps: '10' },
+      { exerciseId: 'plancha', sets: 3, reps: '30 seg' },
+    ],
+  },
+  {
+    id: 'home-fullbody-b',
+    name: 'Full Body Casa B',
+    emoji: '🏠',
+    description: 'Segunda rutina completa. Mancuernas, mochila, sofá y tu cuerpo.',
+    difficulty: 'Principiante',
+    estimatedTime: '35-45 min',
+    isHome: true,
+    exercises: [
+      { exerciseId: 'sentadilla-bulgara', sets: 3, reps: '10 por pierna' },
+      { exerciseId: 'flexiones-mochila', sets: 3, reps: '12' },
+      { exerciseId: 'remo-mochila', sets: 3, reps: '12' },
+      { exerciseId: 'elevaciones-laterales', sets: 3, reps: '15' },
+      { exerciseId: 'curl-martillo', sets: 3, reps: '12' },
+      { exerciseId: 'extension-triceps-overhead', sets: 3, reps: '15' },
+      { exerciseId: 'mountain-climbers', sets: 3, reps: '30 seg' },
+    ],
+  },
+  {
+    id: 'home-upper',
+    name: 'Tren Superior Casa',
+    emoji: '🏠',
+    description: 'Pecho, espalda, hombros y brazos. Mancuernas + peso corporal.',
+    difficulty: 'Principiante',
+    estimatedTime: '35-45 min',
+    isHome: true,
+    exercises: [
+      { exerciseId: 'floor-press', sets: 4, reps: '12' },
+      { exerciseId: 'remo-inclinado-mancuernas', sets: 4, reps: '12' },
+      { exerciseId: 'flexiones-mochila', sets: 3, reps: '12' },
+      { exerciseId: 'flexiones-pike', sets: 3, reps: '10' },
+      { exerciseId: 'superman', sets: 3, reps: '12' },
+      { exerciseId: 'curl-concentrado', sets: 3, reps: '10 por brazo' },
+      { exerciseId: 'dips-sillas', sets: 3, reps: '10' },
+    ],
+  },
+  {
+    id: 'home-lower',
+    name: 'Tren Inferior Casa',
+    emoji: '🏠',
+    description: 'Piernas, glúteos y core. Silla, sofá y mancuernas.',
+    difficulty: 'Principiante',
+    estimatedTime: '35-45 min',
+    isHome: true,
+    exercises: [
+      { exerciseId: 'sentadilla-goblet', sets: 4, reps: '15' },
+      { exerciseId: 'sentadilla-bulgara', sets: 3, reps: '10 por pierna' },
+      { exerciseId: 'hip-thrust-sofa', sets: 4, reps: '15' },
+      { exerciseId: 'peso-muerto-mancuernas', sets: 3, reps: '12' },
+      { exerciseId: 'sentadilla-pared', sets: 3, reps: '30 seg' },
+      { exerciseId: 'pantorrillas-mancuernas', sets: 4, reps: '20' },
+      { exerciseId: 'mountain-climbers', sets: 3, reps: '30 seg' },
+    ],
+  },
+  {
+    id: 'home-push',
+    name: 'Empuje Casa',
+    emoji: '🏠',
+    description: 'Pecho, hombros y tríceps. Mancuernas, flexiones y sillas.',
+    difficulty: 'Principiante',
+    estimatedTime: '30-40 min',
+    isHome: true,
+    exercises: [
+      { exerciseId: 'floor-press', sets: 4, reps: '12' },
+      { exerciseId: 'aperturas-suelo', sets: 3, reps: '15' },
+      { exerciseId: 'flexiones-mochila', sets: 3, reps: '12' },
+      { exerciseId: 'flexiones-pike', sets: 3, reps: '10' },
+      { exerciseId: 'press-hombros-pie', sets: 3, reps: '12' },
+      { exerciseId: 'flexiones-diamante', sets: 3, reps: '10' },
+      { exerciseId: 'extension-triceps-overhead', sets: 3, reps: '15' },
+    ],
+  },
+  {
+    id: 'home-pull',
+    name: 'Tirón Casa',
+    emoji: '🏠',
+    description: 'Espalda y bíceps. Mancuernas, mochila y bidones.',
+    difficulty: 'Principiante',
+    estimatedTime: '30-40 min',
+    isHome: true,
+    exercises: [
+      { exerciseId: 'remo-inclinado-mancuernas', sets: 4, reps: '12' },
+      { exerciseId: 'remo-mochila', sets: 3, reps: '12' },
+      { exerciseId: 'remo-mancuerna', sets: 3, reps: '12 por lado' },
+      { exerciseId: 'superman', sets: 3, reps: '15' },
+      { exerciseId: 'curl-mancuernas', sets: 3, reps: '12' },
+      { exerciseId: 'curl-concentrado', sets: 3, reps: '10 por brazo' },
+      { exerciseId: 'curl-bidon', sets: 3, reps: '12 por brazo' },
+    ],
+  },
+];
+
 export const weeklyPlans = [
   {
     id: 'principiante-3',
@@ -166,14 +278,62 @@ export const weeklyPlans = [
   },
 ];
 
+// === PLANES SEMANALES PARA CASA ===
+export const homeWeeklyPlans = [
+  {
+    id: 'home-principiante-3',
+    name: '🏠 Plan Casa Principiante',
+    description: '3 días por semana con tus mancuernas en casa.',
+    days: [
+      { day: 'Lunes', routineId: 'home-fullbody-a' },
+      { day: 'Martes', routineId: null },
+      { day: 'Miércoles', routineId: 'home-fullbody-b' },
+      { day: 'Jueves', routineId: null },
+      { day: 'Viernes', routineId: 'home-fullbody-a' },
+      { day: 'Sábado', routineId: null },
+      { day: 'Domingo', routineId: null },
+    ],
+  },
+  {
+    id: 'home-intermedio-4',
+    name: '🏠 Plan Casa Torso/Pierna',
+    description: '4 días por semana. Dividí el cuerpo en dos.',
+    days: [
+      { day: 'Lunes', routineId: 'home-upper' },
+      { day: 'Martes', routineId: 'home-lower' },
+      { day: 'Miércoles', routineId: null },
+      { day: 'Jueves', routineId: 'home-upper' },
+      { day: 'Viernes', routineId: 'home-lower' },
+      { day: 'Sábado', routineId: null },
+      { day: 'Domingo', routineId: null },
+    ],
+  },
+  {
+    id: 'home-ppl-6',
+    name: '🏠 Plan Casa Push/Pull/Pierna',
+    description: '6 días por semana. Para darle duro en casa.',
+    days: [
+      { day: 'Lunes', routineId: 'home-push' },
+      { day: 'Martes', routineId: 'home-pull' },
+      { day: 'Miércoles', routineId: 'home-lower' },
+      { day: 'Jueves', routineId: 'home-push' },
+      { day: 'Viernes', routineId: 'home-pull' },
+      { day: 'Sábado', routineId: 'home-lower' },
+      { day: 'Domingo', routineId: null },
+    ],
+  },
+];
+
+const allRoutines = [...routines, ...homeRoutines];
+
 export function getRoutineById(id) {
-  return routines.find((r) => r.id === id);
+  return allRoutines.find((r) => r.id === id);
 }
 
-export function getTodaySuggestion() {
+export function getTodaySuggestion(mode = 'gym') {
   const dayIndex = new Date().getDay(); // 0=sun, 1=mon...
-  // Default to principiante plan
-  const plan = weeklyPlans[0];
+  const plans = mode === 'home' ? homeWeeklyPlans : weeklyPlans;
+  const plan = plans[0];
   const dayMap = [6, 0, 1, 2, 3, 4, 5]; // sun→6, mon→0, etc.
   const planDay = plan.days[dayMap[dayIndex]];
   return planDay?.routineId ? getRoutineById(planDay.routineId) : null;
