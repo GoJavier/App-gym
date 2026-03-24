@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate PWA Icons</title></head>
+<body style="background:#1a1a2e;color:white;font-family:sans-serif;text-align:center;padding:40px">
+<h2>Generador de iconos PWA para GymBuddy</h2>
+<p>Hacé clic en los botones para descargar los iconos PNG</p>
+<canvas id="c" style="display:none"></canvas>
+<br><br>
+<button onclick="generate(192)" style="padding:12px 24px;font-size:16px;margin:8px;cursor:pointer">Descargar icon-192.png</button>
+<button onclick="generate(512)" style="padding:12px 24px;font-size:16px;margin:8px;cursor:pointer">Descargar icon-512.png</button>
+<script>
+function generate(size) {
+  const c = document.getElementById('c');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+  // Background
+  ctx.fillStyle = '#0f172a';
+  const r = size * 0.18;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(size - r, 0);
+  ctx.quadraticCurveTo(size, 0, size, r);
+  ctx.lineTo(size, size - r);
+  ctx.quadraticCurveTo(size, size, size - r, size);
+  ctx.lineTo(r, size);
+  ctx.quadraticCurveTo(0, size, 0, size - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.fill();
+  // Dumbbell
+  const cx = size/2, cy = size*0.4;
+  const barW = size*0.55, barH = size*0.03;
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillRect(cx-barW/2, cy-barH/2, barW, barH);
+  // Plates
+  const plateW = size*0.045, plateH = size*0.18;
+  ctx.fillStyle = '#10b981';
+  ctx.fillRect(cx-barW/2-plateW*0.5, cy-plateH/2, plateW, plateH);
+  ctx.fillRect(cx+barW/2-plateW*0.5, cy-plateH/2, plateW, plateH);
+  const plate2W = size*0.035, plate2H = size*0.14;
+  ctx.fillStyle = '#059669';
+  ctx.fillRect(cx-barW/2+plateW*0.7, cy-plate2H/2, plate2W, plate2H);
+  ctx.fillRect(cx+barW/2-plateW*0.7-plate2W, cy-plate2H/2, plate2W, plate2H);
+  // Stoppers
+  const sW = size*0.04, sH = size*0.09;
+  ctx.fillStyle = '#64748b';
+  ctx.fillRect(cx-barW/2-plateW*0.5-sW*0.8, cy-sH/2, sW, sH);
+  ctx.fillRect(cx+barW/2+plateW*0.5-sW*0.2, cy-sH/2, sW, sH);
+  // Text
+  ctx.fillStyle = '#10b981';
+  ctx.font = `800 ${size*0.14}px system-ui,sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText('GYM', cx, cy + size*0.22);
+  ctx.fillStyle = '#e2e8f0';
+  ctx.font = `600 ${size*0.08}px system-ui,sans-serif`;
+  ctx.fillText('BUDDY', cx, cy + size*0.33);
+  // Download
+  c.toBlob(blob => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `icon-${size}.png`;
+    a.click();
+  });
+}
+</script>
+</body>
+</html>
