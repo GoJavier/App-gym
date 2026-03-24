@@ -673,6 +673,129 @@ a { color: var(--accent); text-decoration: none; }
   margin-top: 4px;
 }
 
+/* Exercise action buttons (preset + replace) */
+.exercise-actions-row {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px 12px;
+}
+
+.exercise-action-btn {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 0.78rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exercise-action-btn:active {
+  transform: scale(0.96);
+}
+
+.preset-btn.saved {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.replace-btn {
+  color: var(--info);
+}
+
+/* Replace exercise list */
+.replace-list {
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.replace-list-title {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.replace-empty {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 12px;
+}
+
+.replace-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.replace-option:active {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+/* Add exercise button */
+.add-exercise-btn {
+  color: var(--accent) !important;
+  border: 1px dashed var(--accent) !important;
+  margin-bottom: 8px;
+}
+
+/* Add exercise modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+}
+
+.add-exercise-modal {
+  background: var(--bg-secondary);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 70vh;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.add-exercise-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.add-exercise-modal-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.add-exercise-muscle {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
 .how-to-toggle {
   display: flex;
   align-items: center;

@@ -1,34 +1,43 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getRoutineById } from '../data/routines';
-import { getExerciseById } from '../data/exercises';
-import { saveWorkout, getMotivationalMessage, formatDuration } from '../utils/storage';
+import { getExerciseById, getSimilarExercises, exercises } from '../data/exercises';
+import { saveWorkout, getMotivationalMessage, formatDuration, getPreset, savePreset } from '../utils/storage';
 import RestTimer from './RestTimer';
+
+function buildExerciseEntry(exerciseId, sets, reps) {
+  const exercise = getExerciseById(exerciseId);
+  const preset = getPreset(exerciseId);
+  const numSets = preset?.sets || sets;
+  const defaultReps = preset?.reps || reps;
+  const defaultWeight = preset?.weight || '';
+  return {
+    exerciseId,
+    name: exercise?.name || exerciseId,
+    emoji: exercise?.emoji || '🏋️',
+    expanded: false,
+    showHowTo: false,
+    showReplace: false,
+    sets: Array.from({ length: numSets }, () => ({
+      weight: defaultWeight,
+      reps: defaultReps,
+      completed: false,
+    })),
+  };
+}
 
 export default function WorkoutSession({ routineId, onFinish, navigate }) {
   const routine = getRoutineById(routineId);
   const [startTime] = useState(Date.now());
   const [elapsed, setElapsed] = useState(0);
   const [exerciseData, setExerciseData] = useState(() =>
-    routine.exercises.map((ex) => {
-      const exercise = getExerciseById(ex.exerciseId);
-      return {
-        exerciseId: ex.exerciseId,
-        name: exercise?.name || ex.exerciseId,
-        emoji: exercise?.emoji || '🏋️',
-        expanded: false,
-        showHowTo: false,
-        sets: Array.from({ length: ex.sets }, () => ({
-          weight: '',
-          reps: ex.reps,
-          completed: false,
-        })),
-      };
-    })
+    routine.exercises.map((ex) => buildExerciseEntry(ex.exerciseId, ex.sets, ex.reps))
   );
   const [showTimer, setShowTimer] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(90);
   const [showSummary, setShowSummary] = useState(false);
   const [summaryData, setSummaryData] = useState(null);
+  const [showAddExercise, setShowAddExercise] = useState(false);
+  const [presetSaved, setPresetSaved] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => setElapsed(Date.now() - startTime), 1000);
@@ -87,6 +96,68 @@ export default function WorkoutSession({ routineId, onFinish, navigate }) {
         };
       })
     );
+  }, []);
+
+  const handleSavePreset = useCallback((exIndex) => {
+    const ex = exerciseData[exIndex];
+    const firstSet = ex.sets[0];
+    savePreset(ex.exerciseId, {
+      weight: firstSet?.weight || '',
+      reps: firstSet?.reps || '10',
+      sets: ex.sets.length,
+    });
+    setPresetSaved(exIndex);
+    setTimeout(() => setPresetSaved(null), 1500);
+  }, [exerciseData]);
+
+  const toggleReplace = useCallback((index) => {
+    setExerciseData((prev) =>
+      prev.map((ex, i) => (i === index ? { ...ex, showReplace: !ex.showReplace } : ex))
+    );
+  }, []);
+
+  const handleReplace = useCallback((exIndex, newExerciseId) => {
+    setExerciseData((prev) =>
+      prev.map((ex, i) => {
+        if (i !== exIndex) return ex;
+        const newEx = getExerciseById(newExerciseId);
+        const preset = getPreset(newExerciseId);
+        return {
+          ...ex,
+          exerciseId: newExerciseId,
+          name: newEx?.name || newExerciseId,
+          emoji: newEx?.emoji || '🏋️',
+          showReplace: false,
+          sets: ex.sets.map((s) => ({
+            weight: preset?.weight || '',
+            reps: preset?.reps || s.reps,
+            completed: false,
+          })),
+        };
+      })
+    );
+  }, []);
+
+  const handleAddExercise = useCallback((exerciseId) => {
+    const ex = getExerciseById(exerciseId);
+    const preset = getPreset(exerciseId);
+    setExerciseData((prev) => [
+      ...prev,
+      {
+        exerciseId,
+        name: ex?.name || exerciseId,
+        emoji: ex?.emoji || '🏋️',
+        expanded: true,
+        showHowTo: false,
+        showReplace: false,
+        sets: Array.from({ length: preset?.sets || 3 }, () => ({
+          weight: preset?.weight || '',
+          reps: preset?.reps || '10',
+          completed: false,
+        })),
+      },
+    ]);
+    setShowAddExercise(false);
   }, []);
 
   const finishWorkout = () => {
@@ -286,6 +357,44 @@ export default function WorkoutSession({ routineId, onFinish, navigate }) {
                 >
                   + Agregar serie
                 </button>
+
+                <div className="exercise-actions-row">
+                  <button
+                    className={`exercise-action-btn preset-btn ${presetSaved === exIndex ? 'saved' : ''}`}
+                    onClick={() => handleSavePreset(exIndex)}
+                  >
+                    {presetSaved === exIndex ? '✅ Guardado' : '💾 Guardar preset'}
+                  </button>
+                  <button
+                    className="exercise-action-btn replace-btn"
+                    onClick={() => toggleReplace(exIndex)}
+                  >
+                    🔄 Reemplazar
+                  </button>
+                </div>
+
+                {ex.showReplace && (() => {
+                  const currentIds = exerciseData.map((e) => e.exerciseId);
+                  const similar = getSimilarExercises(ex.exerciseId, currentIds);
+                  return (
+                    <div className="replace-list">
+                      <div className="replace-list-title">Elegí un ejercicio similar:</div>
+                      {similar.length === 0 && (
+                        <div className="replace-empty">No hay alternativas disponibles</div>
+                      )}
+                      {similar.map((alt) => (
+                        <button
+                          key={alt.id}
+                          className="replace-option"
+                          onClick={() => handleReplace(exIndex, alt.id)}
+                        >
+                          <span>{alt.emoji}</span>
+                          <span>{alt.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
               </div>
             )}
           </div>
@@ -293,6 +402,12 @@ export default function WorkoutSession({ routineId, onFinish, navigate }) {
       })}
 
       <div className="workout-finish-area">
+        <button
+          className="btn btn-secondary add-exercise-btn"
+          onClick={() => setShowAddExercise(true)}
+        >
+          ➕ Agregar ejercicio
+        </button>
         <button className="btn btn-primary" onClick={finishWorkout}>
           🏁 Terminar Entrenamiento
         </button>
@@ -308,6 +423,41 @@ export default function WorkoutSession({ routineId, onFinish, navigate }) {
           Cancelar
         </button>
       </div>
+
+      {showAddExercise && (() => {
+        const currentIds = exerciseData.map((e) => e.exerciseId);
+        const isHome = routine.id?.startsWith('home-');
+        const available = exercises.filter(
+          (e) => !currentIds.includes(e.id) && (isHome ? e.homeExercise : !e.homeExercise)
+        );
+        return (
+          <div className="modal-overlay" onClick={() => setShowAddExercise(false)}>
+            <div className="add-exercise-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="add-exercise-modal-title">Agregar ejercicio</div>
+              <div className="add-exercise-modal-list">
+                {available.map((ex) => (
+                  <button
+                    key={ex.id}
+                    className="replace-option"
+                    onClick={() => handleAddExercise(ex.id)}
+                  >
+                    <span>{ex.emoji}</span>
+                    <span>{ex.name}</span>
+                    <span className="add-exercise-muscle">{ex.muscleGroup}</span>
+                  </button>
+                ))}
+              </div>
+              <button
+                className="btn btn-secondary"
+                style={{ marginTop: 12, width: '100%' }}
+                onClick={() => setShowAddExercise(false)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {showTimer && (
         <RestTimer

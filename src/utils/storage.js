@@ -3,7 +3,27 @@ const STORAGE_KEYS = {
   PROFILE: 'gymbuddy_profile',
   STREAK: 'gymbuddy_streak',
   WEEK_PLAN: 'gymbuddy_weekplan',
+  PRESETS: 'gymbuddy_presets',
 };
+
+// --- Exercise Presets (user-saved weight/reps/sets) ---
+export function getPresets() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRESETS)) || {};
+  } catch {
+    return {};
+  }
+}
+
+export function getPreset(exerciseId) {
+  return getPresets()[exerciseId] || null;
+}
+
+export function savePreset(exerciseId, { weight, reps, sets }) {
+  const presets = getPresets();
+  presets[exerciseId] = { weight, reps, sets, savedAt: new Date().toISOString() };
+  localStorage.setItem(STORAGE_KEYS.PRESETS, JSON.stringify(presets));
+}
 
 export function getWorkouts() {
   try {
